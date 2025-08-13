@@ -1,0 +1,8 @@
+[package]
+name = "mini_natural_sort"
+version = "1.0.0"
+authors = ["moko256"]
+edition = "2024"
+description = "Simple no-std natural (human-readable) sort crate."
+categories = ["no-std", "natural", "human", "sort", "order"]
+license = "MIT"
