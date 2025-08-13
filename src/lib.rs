@@ -6,15 +6,6 @@ use core::cmp::Ordering;
 /// Key to strings comparison by natural (human-readable) sort.
 ///
 /// This supports `no-std`.
-///
-/// # Examples
-///
-/// ```
-/// use mini_natural_sort::NaturalSortKey;
-///
-/// let mut filenames = [ "b001.txt", "b1.txt", "b000002.txt", "A.txt", "a.txt", "c.txt", "c_copy (1).txt" ];
-/// filenames.sort_by_key(|v| NaturalSortKey::from_str(v));
-/// ```
 #[derive(Debug)]
 pub struct NaturalSortKey<'a> {
     inner: &'a str,
