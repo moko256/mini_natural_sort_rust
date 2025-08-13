@@ -7,7 +7,7 @@ Simple no-std natural (human-readable) sort crate.
 ```rust
 use mini_natural_sort::NaturalSortKey;
 
-let mut filenames = [ "b001.txt", "b1.txt", "b000002.txt", "A.txt", "a.txt", "c.txt", "c_copy (1).txt" ];
+let mut filenames = ["b001.txt", "b1.txt", "b000002.txt", "A.txt", "a.txt", "c.txt", "c_copy (1).txt"];
 filenames.sort_by_key(|v| NaturalSortKey::from_str(v));
 
 println!("{:?}", filenames);
