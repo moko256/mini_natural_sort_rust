@@ -3,6 +3,13 @@
 
 use core::cmp::Ordering;
 
+/// Comparison function to compare two strings by natural (human-readable) sort.
+///
+/// This supports `no-std`.
+pub fn compare_str_natural<A: AsRef<str>, B: AsRef<str>>(a: &A, b: &B) -> Ordering {
+    NaturalSortKey::from(a.as_ref()).cmp(&NaturalSortKey::from(b.as_ref()))
+}
+
 /// Key to strings comparison by natural (human-readable) sort.
 ///
 /// This supports `no-std`.
@@ -11,9 +18,9 @@ pub struct NaturalSortKey<'a> {
     inner: &'a str,
 }
 
-impl<'a> NaturalSortKey<'a> {
-    pub fn from_str(input: &'a str) -> Self {
-        NaturalSortKey { inner: input }
+impl<'a> From<&'a str> for NaturalSortKey<'a> {
+    fn from(value: &'a str) -> Self {
+        NaturalSortKey { inner: value }
     }
 }
 
@@ -196,7 +203,10 @@ impl<'a> NaturalSortPart<'a> {
 mod tests {
     use std::fmt::Debug;
 
-    use crate::{NaturalSortKey, NaturalSortKeyIter, NaturalSortPart, NaturalSortPartKind};
+    use crate::{
+        NaturalSortKey, NaturalSortKeyIter, NaturalSortPart, NaturalSortPartKind,
+        compare_str_natural,
+    };
 
     impl<'a> NaturalSortPart<'a> {
         fn as_num(part: &'a str) -> Self {
@@ -215,60 +225,77 @@ mod tests {
     }
 
     #[test]
+    fn test_compare_str_natural() {
+        let filenames = [
+            "b001.txt",
+            "b1.txt",
+            "b000002.txt",
+            "A.txt",
+            "a.txt",
+            "c.txt",
+            "c_copy (1).txt",
+        ];
+
+        let mut filenames_str = filenames.clone();
+        filenames_str.sort_by(compare_str_natural);
+
+        let mut filenames_string = filenames.map(String::from);
+        filenames_string.sort_by(compare_str_natural);
+
+        let sorted_filenames = [
+            "a.txt",
+            "b1.txt",
+            "b001.txt",
+            "b000002.txt",
+            "c.txt",
+            "c_copy (1).txt",
+            "A.txt",
+        ];
+
+        assert_eq!(filenames_str, sorted_filenames);
+        assert_eq!(filenames_string, sorted_filenames);
+    }
+
+    #[test]
     fn sort_key_ord() {
         test_a_greater_than_b(
-            NaturalSortKey::from_str("abc00001"),
-            NaturalSortKey::from_str("abc2"),
+            NaturalSortKey::from("abc00001"),
+            NaturalSortKey::from("abc2"),
         );
         test_a_greater_than_b(
-            NaturalSortKey::from_str("abc1"),
-            NaturalSortKey::from_str("abc00002"),
+            NaturalSortKey::from("abc1"),
+            NaturalSortKey::from("abc00002"),
         );
 
         test_a_greater_than_b(
-            NaturalSortKey::from_str("abc1"),
-            NaturalSortKey::from_str("abc00001"),
+            NaturalSortKey::from("abc1"),
+            NaturalSortKey::from("abc00001"),
         );
 
-        test_a_equal_b(
-            NaturalSortKey::from_str("abc1"),
-            NaturalSortKey::from_str("abc1"),
-        );
+        test_a_equal_b(NaturalSortKey::from("abc1"), NaturalSortKey::from("abc1"));
     }
 
     #[test]
     fn sort_key_str_ord() {
-        test_a_greater_than_b(NaturalSortKey::from_str("a"), NaturalSortKey::from_str("A"));
+        test_a_greater_than_b(NaturalSortKey::from("a"), NaturalSortKey::from("A"));
 
-        test_a_equal_b(NaturalSortKey::from_str("a"), NaturalSortKey::from_str("a"));
-        test_a_equal_b(NaturalSortKey::from_str("A"), NaturalSortKey::from_str("A"));
+        test_a_equal_b(NaturalSortKey::from("a"), NaturalSortKey::from("a"));
+        test_a_equal_b(NaturalSortKey::from("A"), NaturalSortKey::from("A"));
     }
 
     #[test]
     fn sort_key_num_ord() {
-        test_a_greater_than_b(
-            NaturalSortKey::from_str("12"),
-            NaturalSortKey::from_str("123"),
-        );
-        test_a_greater_than_b(
-            NaturalSortKey::from_str("122"),
-            NaturalSortKey::from_str("123"),
-        );
+        test_a_greater_than_b(NaturalSortKey::from("12"), NaturalSortKey::from("123"));
+        test_a_greater_than_b(NaturalSortKey::from("122"), NaturalSortKey::from("123"));
 
-        test_a_greater_than_b(
-            NaturalSortKey::from_str("123"),
-            NaturalSortKey::from_str("0000123"),
-        );
+        test_a_greater_than_b(NaturalSortKey::from("123"), NaturalSortKey::from("0000123"));
 
-        test_a_equal_b(
-            NaturalSortKey::from_str("123"),
-            NaturalSortKey::from_str("123"),
-        );
+        test_a_equal_b(NaturalSortKey::from("123"), NaturalSortKey::from("123"));
     }
 
     #[test]
     fn sort_key_empty() {
-        test_a_equal_b(NaturalSortKey::from_str(""), NaturalSortKey::from_str(""));
+        test_a_equal_b(NaturalSortKey::from(""), NaturalSortKey::from(""));
     }
 
     #[test]

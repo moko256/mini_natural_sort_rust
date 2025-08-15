@@ -1,4 +1,4 @@
-use mini_natural_sort::NaturalSortKey;
+use mini_natural_sort::compare_str_natural;
 
 fn main() {
     let mut filenames = [
@@ -12,6 +12,6 @@ fn main() {
     ];
     println!("Before: {:?}", filenames);
 
-    filenames.sort_by_key(|v| NaturalSortKey::from_str(v));
+    filenames.sort_by(compare_str_natural);
     println!("After: {:?}", filenames);
 }
