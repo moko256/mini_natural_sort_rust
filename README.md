@@ -23,7 +23,7 @@ assert!(NaturalSortKey::from("0000001") < NaturalSortKey::from("2"));
 
 ```toml
 [dependencies]
-mini_natural_sort = { git = "https://github.com/moko256/mini_natural_sort_rust.git", tag = "v1.0.0" }
+mini_natural_sort = { git = "https://github.com/moko256/mini_natural_sort_rust.git", tag = "v2.0.0" }
 ```
 
 ### License
