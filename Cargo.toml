@@ -1,6 +1,6 @@
 [package]
 name = "mini_natural_sort"
-version = "1.0.0"
+version = "2.0.1"
 authors = ["moko256"]
 edition = "2024"
 description = "Simple no-std natural (human-readable) sort crate."

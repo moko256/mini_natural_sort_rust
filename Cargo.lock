@@ -4,4 +4,4 @@ version = 4
 
 [[package]]
 name = "mini_natural_sort"
-version = "1.0.0"
+version = "2.0.1"
